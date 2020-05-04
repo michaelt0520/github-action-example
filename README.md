@@ -30,7 +30,11 @@ jobs:
       postgres:
         image: postgres:11.5
         ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
@@ -55,6 +59,7 @@ jobs:
         PGUSER: postgres
         RAILS_ENV: test
       run: bundle exec rspec
+
 ```
 
 Một workflow được tạo thành từ một hoặc nhiều job. Jobs chạy song song theo mặc định. Để chạy các job một cách tuần tự, bạn có thể xác định các dependencies vào các job khác bằng cách jobs.<job_id>.needs keyword. Mỗi job chạy trong một phiên bản mới của môi trường ảo được chỉ định bởi runs-on.
