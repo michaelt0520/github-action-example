@@ -27,7 +27,7 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let!(:user) { create :user, email: 'example@gmail.com', password: 'password', password_confirmation: 'password' }
+    let!(:user) { create :user, email: 'congcong@gmail.com', password: 'password', password_confirmation: 'password' }
 
     context 'when user invalid password' do
       subject { post :create, params: { email: 'example@gmail.com', password: 'passpass' } }
