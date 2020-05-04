@@ -30,7 +30,7 @@ RSpec.describe SessionsController, type: :controller do
     let!(:user) { create :user, email: 'congcong@gmail.com', password: 'password', password_confirmation: 'password' }
 
     context 'when user invalid password' do
-      subject { post :create, params: { email: 'example@gmail.com', password: 'passpass' } }
+      subject { post :create, params: { email: 'congcong@gmail.com', password: 'passpass' } }
 
       it 'render login page' do
         is_expected
@@ -41,7 +41,7 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context 'when user login success' do
-      subject { post :create, params: { email: 'example@gmail.com', password: 'password' } }
+      subject { post :create, params: { email: 'congcong@gmail.com', password: 'password' } }
 
       it 'redirect to home page' do
         is_expected
