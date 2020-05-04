@@ -15,25 +15,25 @@ Chúng ta tạo một **file .yml** trong folder workflow ( ví dụ: **github-p
 ```
 name: Ruby
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [pull_request]
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
 
 jobs:
   run_rspec:
 
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:11.5
         ports: ["5432:5432"]
         options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s 
-          --health-timeout 5s 
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
           --health-retries 5
 
     steps:
@@ -42,8 +42,7 @@ jobs:
       uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       with:
         ruby-version: 2.6.5
-
-    - name: Install app
+    - name: Build and test with Rake
       env:
         PGHOST: localhost
         PGUSER: postgres
@@ -51,15 +50,9 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bin/rails db:setup
-
-    - name: Run Tests
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        RAILS_ENV: test
-      run: bundle exec rspec
-
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+        bundle exec rspec
 ```
 
 Một workflow được tạo thành từ một hoặc nhiều job. Jobs chạy song song theo mặc định. Để chạy các job một cách tuần tự, bạn có thể xác định các dependencies vào các job khác bằng cách jobs.<job_id>.needs keyword. Mỗi job chạy trong một phiên bản mới của môi trường ảo được chỉ định bởi runs-on.
