@@ -1,3 +1,4 @@
+![Ruby](https://github.com/nguyenthanhcong101096/github-action-example/workflows/Ruby/badge.svg)
 
 ![](https://images.viblo.asia/d2359817-5d94-4aa3-b847-8ec46d8bf0dc.png)
 
