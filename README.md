@@ -65,3 +65,132 @@ Một workflow được tạo thành từ một hoặc nhiều job. Jobs chạy 
   	npm install
    	npm run-script build
 ```
+
+# Creating and storing encrypted secrets
+- Encrypted secrets allow you to store sensitive information, such as access tokens, in your repository.
+
+> Secrets are encrypted environment variables that you create in a repository for use with GitHub Actions. GitHub uses a libsodium sealed box to help ensure that secrets are encrypted before they reach GitHub, and remain encrypted until you use them in a workflow
+
+> **Warning:** GitHub automatically redacts secrets printed to the log, but you should avoid printing secrets to the log intentionally.
+
+### Creating encrypted secrets
+**1.** On GitHub, navigate to the main page of the repository.
+
+**2** Under your repository name, click  **Settings**.
+![](https://help.github.com/assets/images/help/repository/repo-actions-settings.png)
+
+**3** In the left sidebar, click Secrets
+
+**4** Type a name for your secret in the "Name" input box.
+
+**5** Type the value for your secret.
+
+**6** Click Add secret.
+
+### Using encrypted secrets in a workflow
+
+```
+steps:
+  - name: Hello world action
+    with: # Set the secret as an input
+      super_secret: ${{ secrets.SuperSecret }}
+    env: # Or as an environment variable
+      super_secret: ${{ secrets.SuperSecret }}
+```
+
+Example using Bash
+
+```
+steps:
+  - shell: bash
+    env:
+      SUPER_SECRET: ${{ secrets.SuperSecret }}
+    run: |
+      example-command "$SUPER_SECRET"
+```
+
+# ssh deployments
+This GitHub Action deploys specific directory from GITHUB_WORKSPACE to a folder on a server via rsync over ssh
+
+This action would usually follow a build/test action which leaves deployable code in **GITHUB_WORKSPACE**, eg dist;
+
+## Configuration
+Pass configuration with env vars
+
+**SSH-PRIVATE_KEY [required]**
+
+This should be the private key part of an ssh key pair. The public key part should be added to the authorized_keys file on the server that receives the deployment.
+
+The keys should be generated using the PEM format. You can us this command
+`ssh-keygen -m PEM -t rsa -b 4096`
+
+**REMOTE_HOST [required]**
+
+`eg: mydomain.com`
+
+**REMOTE_USER [required]**
+
+`eg: myusername`
+
+**REMOTE_PORT (optional, default '22')**
+
+`eg: '59184'`
+
+**ARGS (optional, default '-rltgoDzvO')**
+
+`For any initial/required rsync flags, eg: -avzr --delete`
+
+**SOURCE (optional, default '')**
+
+`The source directory, path relative to $GITHUB_WORKSPACE root, eg: dist/`
+
+**TARGET (optional, default '/home/REMOTE_USER/')**
+
+`The target directory`
+
+## Usage
+
+```
+  - name: Deploy to Staging server
+    uses: easingthemes/ssh-deploy@v2.0.7
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+      ARGS: "-rltgoDzvO"
+      SOURCE: "dist/"
+      REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+      REMOTE_USER: ${{ secrets.REMOTE_USER }}
+      TARGET: ${{ secrets.REMOTE_TARGET }}
+```
+
+## Example usage in workflow
+
+```
+name: Node CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Install npm dependencies
+      run: npm install
+    - name: Run build task
+      run: npm run build --if-present
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@v2.1.1
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+```
