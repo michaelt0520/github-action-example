@@ -32,8 +32,7 @@ jobs:
         ruby-version: 2.6.5
     
     - name: Install PostgreSQL 11 client
-      run: |
-        sudo apt-get -yqq install libpq-d
+      run: sudo apt-get -y install libpq-d
 
     - name: Install app
       env:
