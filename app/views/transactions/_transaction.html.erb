@@ -1,0 +1,9 @@
+<tr>
+  <td><%= transaction.transaction_type %></td>
+  <td><%= transaction.amount %></td>
+  <td><%= transaction.created_date %></td>
+  <td>
+    <%= link_to 'Edit', edit_account_transaction_path(@account, transaction), method: :get %> |
+    <%= link_to 'Delete', account_transaction_path(@account, transaction),    method: :delete %>
+  </td>
+</tr>

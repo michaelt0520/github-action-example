@@ -1,0 +1,21 @@
+<% 
+  url    = action =='edit' ? account_path(@account) : accounts_path 
+  method = action =='edit' ? :patch : :post
+%>
+
+<%= form_for @account, url: url, method: method do |f| %>
+  <% if flash[:alert].present? %>
+    <p class="error"><%= flash[:alert] %></p>
+  <% end %>
+  
+  <div class="form-group">
+    <%= f.label :name, class: 'form-label' %>
+    <%= f.text_field :name, autofocus: true, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :bank, class: 'form-label' %>
+    <%= f.select :bank, Account.bank.values, class: 'form-control', prompt: 'Select One' %>
+  </div>
+  <%= f.submit 'Submit', class: 'btn btn-danger u-w-full u-mt-16' %>
+<% end %>

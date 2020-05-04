@@ -1,0 +1,2 @@
+example = FactoryBot.create(:user, :with_account_bank_and_transactions, role: :admin, password: 'password', password_confirmation: 'password', display_name: 'Hola', email: 'example@gmail.com')
+users   = FactoryBot.create_list(:user, 10, :with_account_bank_and_transactions, password: 'password', password_confirmation: 'password')

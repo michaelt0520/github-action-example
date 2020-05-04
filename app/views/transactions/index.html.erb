@@ -1,0 +1,20 @@
+<h1>History Transaction</h1>
+
+<p><b>Bank Info:</b> <%= @account.name %> - <%= @account.bank %></p>
+
+<%= link_to 'Go back to accounts management', root_path %> |
+<%= link_to 'Add Transaction', new_account_transaction_path(@account) %>
+
+<% if @transactions.empty? %>
+  <p>No transactions data</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Transaction Type</th>
+      <th>Amount</th>
+      <th>Create Date</th>
+      <th>Action</th>
+    </tr>
+    <%= render partial: 'transactions/transaction', collection: @transactions, as: :transaction %>
+  </table>
+<% end %>

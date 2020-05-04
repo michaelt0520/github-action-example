@@ -1,0 +1,67 @@
+AllCops:
+  Exclude:
+    - 'bin/*'
+    - 'db/seeds.rb'
+    - 'db/schema.rb'
+    - 'node_modules/**/*'
+    - 'app/javascript/**/*'
+    - 'bundle/**/*'
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: true
+  TargetRubyVersion: 2.5
+
+Style/GuardClause:
+  Enabled: false
+
+Lint/ScriptPermission:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/supports/json_response_helper.rb'
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 200
+
+Metrics/ClassLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - db/migrate/20180905024333_create_writer_infos.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 7
+
+Metrics/PerceivedComplexity:
+  Max: 8
+
+Metrics/AbcSize:
+  Max: 25
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/BlockComments:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Style/NumericLiterals:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false

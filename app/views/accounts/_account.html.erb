@@ -1,0 +1,9 @@
+<tr>
+  <td><%= link_to account.name, account_transactions_path(account) %></td>
+  <td><%= account.bank %></td>
+  <td><%= account.register_date %></td>
+  <td>
+    <%= link_to 'Edit', edit_account_path(account), method: :get %> |
+    <%= link_to 'Delete', account_path(account),    method: :delete %>
+  </td>
+</tr>

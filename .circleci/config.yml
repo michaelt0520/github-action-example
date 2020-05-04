@@ -1,0 +1,89 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    working_directory: ~/Documents/project/wakuwaku
+    docker:
+       - image: circleci/ruby:2.6.5-node
+         environment:
+           PGHOST: 127.0.0.1
+           PGUSER: app
+           RAILS_ENV: test
+       - image: circleci/postgres:10-alpine-ram
+         environment:
+           POSTGRES_USER: app
+           POSTGRES_DB: test_coding_test
+           POSTGRES_PASSWORD: ''
+       - image: redis
+       - image: circleci/node:8.11-browsers
+
+    steps:
+      - checkout
+
+      - run:
+          name: Update Node.js
+          command: |
+            curl -sSL "https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v10.16.0-linux-x64/bin/node
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - wakuwaku-v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - wakuwaku-v1-dependencies-
+      - run:
+          name: Install Rails Dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: wakuwaku-v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-{{ .Branch }}
+            - yarn-packages-master
+            - yarn-packages-
+      - run:
+          name: Install Dependencies
+          command: |
+            yarn install
+
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+
+      # - run:
+      #     name: setup config files
+      #     command: |
+      #       cp config/database.yml.sample config/database.yml
+      # Database setup
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rspec --format progress \
+                              --format RspecJunitFormatter \
+                              --out /tmp/test-results/rspec.xml \
+                              --format progress \
+                              spec
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results

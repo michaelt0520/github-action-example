@@ -1,0 +1,19 @@
+<h1>Management Accounts</h1>
+
+<p><b>User Info:</b> <%= current_user.display_name %> - <%= current_user.email %></p>
+
+<%= link_to 'Add Account Bank', new_account_path %>
+
+<% if @accounts.empty? %>
+  <p>No accounts data</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Bank</th>
+      <th>Register Date</th>
+      <th>Action</th>
+    </tr>
+    <%= render partial: 'accounts/account', collection: @accounts, as: :account %>
+  </table>
+<% end %>
