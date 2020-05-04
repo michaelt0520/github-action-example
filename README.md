@@ -66,7 +66,8 @@ Một workflow được tạo thành từ một hoặc nhiều job. Jobs chạy 
    	npm run-script build
 ```
 
-# Creating and storing encrypted secrets
+# [Creating and storing encrypted secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)
+
 - Encrypted secrets allow you to store sensitive information, such as access tokens, in your repository.
 
 > Secrets are encrypted environment variables that you create in a repository for use with GitHub Actions. GitHub uses a libsodium sealed box to help ensure that secrets are encrypted before they reach GitHub, and remain encrypted until you use them in a workflow
@@ -109,7 +110,7 @@ steps:
       example-command "$SUPER_SECRET"
 ```
 
-# ssh deployments
+# [SSH deployments](https://github.com/marketplace/actions/ssh-deploy)
 This GitHub Action deploys specific directory from GITHUB_WORKSPACE to a folder on a server via rsync over ssh
 
 This action would usually follow a build/test action which leaves deployable code in **GITHUB_WORKSPACE**, eg dist;
